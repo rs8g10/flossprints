@@ -65,6 +65,8 @@ A shell script will print the stack trace to the console.
 package EPrints;
 
 my $conf;
+		
+use Cwd;
 
 BEGIN
 {
@@ -81,8 +83,7 @@ BEGIN
 	# set default global configuration values
 	if( !defined $conf->{base_path} )
 	{
-		my $base_path = $INC{'EPrints.pm'};
-		$base_path =~ s#[^/]+/\.\.(/|$)##g;
+		my $base_path = Cwd::realpath( $INC{'EPrints.pm'} );
 		$base_path =~ s/.perl_lib.EPrints\.pm$//; # ignore / \
 		$conf->{base_path} = $base_path;
 	}
@@ -101,7 +102,7 @@ use Carp;
 
 use strict;
 
-our $VERSION = v3.3.12;
+our $VERSION = v3.3.13;
 $conf->{version} = "EPrints ".EPrints->human_version;
 $conf->{versionid} = "eprints-".EPrints->human_version;
 
@@ -466,6 +467,10 @@ sub post_config_handler
 		$named{$port} = 1;
 	}
 
+	# eg. "Apache/2.4.7 (Ubuntu)"
+	my $apache_desc = Apache2::ServerUtil::get_server_description();
+	my( $apache_version ) = ( $apache_desc =~ m!^Apache/(\d\.\d)! );
+
 	foreach my $repo (@repos)
 	{
 		 my $port = $repo->config( "port" );
@@ -474,7 +479,8 @@ sub post_config_handler
 		 {
 			 $s->warn( "EPrints Warning! '".$repo->get_id."' is configured for port $port but Apache has not been configured to listen on that port. To fix this add to your main Apache configuration file: Listen $port" );
 		 }
-		 if( !$named{$port} )
+		 # NameVirtualHost not required since v2.3 - http://httpd.apache.org/docs/2.4/mod/core.html#namevirtualhost
+		 if( !$named{$port} && ( defined $apache_version && $apache_version < 2.3 ) )
 		 {
 			 my $hostname = $repo->config( "host" );
 			 $s->warn( "EPrints Warning! '".$repo->get_id."' is configured for port $port but Apache does not have NameVirtualHosts configured for that port. This may cause the wrong repository to respond to '$hostname:$port'. To fix this add to your main Apache configuration file: NameVirtualHost *:$port" );

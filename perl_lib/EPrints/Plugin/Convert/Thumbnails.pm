@@ -186,19 +186,19 @@ $DEFAULT{video_height} = "480";
 #$DEFAULT{video_rate} = "500k";
 
 $DEFAULT{audio_mp4} = {
-	audio_codec => "libfaac",
+	audio_codec => "libvo_aacenc",
 	audio_bitrate => "96k",
 	audio_sampling => "44100",
 	container => "mp4",
 };
 $DEFAULT{audio_ogg} = {
-	audio_codec => "vorbis",
+	audio_codec => "libvorbis",
 	audio_bitrate => "96k",
 	audio_sampling => "44100",
 	container => "ogg",
 };
 $DEFAULT{video_mp4} = {
-	audio_codec => "libfaac",
+	audio_codec => "libvo_aacenc",
 	audio_bitrate => "96k",
 	audio_sampling => "44100",
 	video_codec => "libx264",
@@ -207,7 +207,7 @@ $DEFAULT{video_mp4} = {
 	container => "mp4",
 };
 $DEFAULT{video_ogg} = {
-	audio_codec => "vorbis",
+	audio_codec => "libvorbis",
 	audio_bitrate => "96k",
 	audio_sampling => "44100",
 	video_codec => "libtheora",
@@ -704,7 +704,7 @@ sub export_video
 	my $duration = $doc->get_value( "media_duration" );
 	my $aspect = $doc->get_value( "media_aspect_ratio" );
 	my $ratio = 4 / 3;
-	if( defined $aspect && $aspect =~ /^(\d+):(\d+)$/ )
+	if( defined $aspect && $aspect =~ /^(\d+):(\d+)$/ && ( $1 / $2 ) != 0 ) # ignore 0:n
 	{
 		$ratio = $1 / $2;
 	}

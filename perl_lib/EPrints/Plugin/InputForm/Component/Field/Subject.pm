@@ -40,6 +40,7 @@ sub update_from_form
 	my $field = $self->{config}->{field};
 
 	my $ibutton = $self->get_internal_button;
+	return unless defined $ibutton;
 	if( $ibutton =~ /^(.+)_add$/ )
 	{
 		my $subject = $1;
@@ -405,7 +406,7 @@ sub get_state_params
 	my( $self ) = @_;
 
 	my $params = "";
-	foreach my $id ( $self->{prefix}."q" )
+	foreach my $id ( $self->{prefix}."_q" )
 	{
 		my $v = $self->{session}->param( $id );
 		next unless defined $v;

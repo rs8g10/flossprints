@@ -64,8 +64,6 @@ sub get_system_field_info
 		{ name=>"userid", type=>"itemref", 
 			datasetid=>"user", required=>1 },
 
-		{ name=>"pos", type=>"int", required=>1 },
-
 		{ name=>"name", type=>"text" },
 
 		{ name => "spec", type => "search", datasetid => "eprint",
@@ -255,6 +253,13 @@ sub send_out_alert
 	local $self->{session}->{lang} = $user->language();
 
 	my $searchexp = $self->make_searchexp;
+
+	if( $searchexp->isa( "EPrints::Plugin::Search::Xapian" ) )
+	{
+		$self->{session}->log( "send_alerts: Xapian search engine not yet supported. Cannot send alerts for SavedSearch id=".$self->id );
+		return;
+	}
+
 	# get the description before we fiddle with searchexp
  	my $searchdesc = $searchexp->render_description,
 
@@ -309,7 +314,7 @@ sub send_out_alert
 	}
 
 	my $settings_url = $self->{session}->get_repository->get_conf( "http_cgiurl" ).
-		"/users/home?screen=User::SavedSearch::Edit&savedsearchid=".$self->get_id;
+		"/users/home?screen=Workflow::Edit&dataset=saved_search&dataobj=".$self->get_id;
 	my $freqphrase = $self->{session}->html_phrase(
 		"lib/saved_search:".$freq );
 

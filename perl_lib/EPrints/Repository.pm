@@ -304,7 +304,7 @@ sub _add_live_http_paths
 
 =begin InternalDoc
 
-=item $request = $repository->get_request;
+=item $request = $repository->request;
 
 Return the Apache request object (from mod_perl) or undefined if 
 this isn't a CGI script.
@@ -314,8 +314,8 @@ this isn't a CGI script.
 =cut
 ######################################################################
 
-
-sub get_request
+sub get_request { &request }
+sub request
 {
 	my( $self ) = @_;
 
@@ -371,38 +371,97 @@ CGI parameters in the current request.
 
 sub param
 {
-	my( $self, $name ) = @_;
+        my( $self, $name ) = @_;
 
-	if( !defined $self->{query} ) 
-	{
-		$self->read_params;
-	}
+        if( !defined $self->{query} )
+        {
+                $self->read_params;
+        }
 
-	if( !wantarray )
-	{
-		my $value = ( $self->{query}->param( $name ) );
-		utf8::decode($value);
-		return $value;
-	}
-	
-	# Called in an array context
-	my @result;
+        if( !wantarray )
+        {
+                my $value = ( $self->{query}->param( $name ) );
+                if( EPrints::Utils::is_set( $value ) )
+                {
+                        utf8::decode($value);
+                }
 
-	if( defined $name )
-	{
-		@result = $self->{query}->param( $name );
-	}
-	else
-	{
-		@result = $self->{query}->param;
-	}
+                return $value;
+        }
 
-	utf8::decode($_) for @result;
+        # Called in an array context
+        my @result;
 
-	return( @result );
+        if( defined $name )
+        {
+                @result = $self->{query}->param( $name );
+        }
+        else
+        {
+                @result = $self->{query}->param;
+        }
 
+        for( @result )
+        {
+                next if( !EPrints::Utils::is_set( $_ ) );
+                utf8::decode($_);
+        }
+
+        return( @result );
 }
 
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $repository->remote_ip
+
+A wrapper method which - when available - returns the true IP of the 
+client. This will not return the IP of any Proxy/load balancer in-between.
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+sub remote_ip
+{
+        my( $self ) = @_;
+
+        # need an HTTP request...
+        return if $self->{offline};
+
+        my $r = $self->get_request;
+
+        return if !$r;
+
+        # Proxy has set the "X-Forwarded-For" HTTP header?
+        my $ip = $r->headers_in->{"X-Forwarded-For"};
+
+        # Sanitise and clean up $ip from XFF, if any.
+        if( EPrints::Utils::is_set( $ip ) )
+        {
+                # sanitise: remove lead commas and all whitespace
+                $ip =~ s/^\s*,+|\s+//g;
+                # slice: take only first address from the list
+                $ip =~ s/,.*//;
+        }
+
+        # Apache v2.4+ (http://httpd.apache.org/docs/trunk/developer/new_api_2_4.html)
+        if( !EPrints::Utils::is_set( $ip ) && $r->can( "useragent_ip" ) )
+        {
+                $ip = $r->useragent_ip;
+        }
+
+        # Apache v2.0-2.2
+        if( !EPrints::Utils::is_set( $ip ) && $r->connection->can( "client_ip" ) )
+        {
+                $ip = $r->connection->client_ip;
+        }
+
+        return $ip;
+}
 
 ######################################################################
 =pod
@@ -743,10 +802,13 @@ sub _load_workflows
 			$self->{workflows} );
 	}
 
-	# load repository-specific workflows (may overwrite)
-	EPrints::Workflow::load_all( 
-		$self->config( "config_path" )."/workflows",
-		$self->{workflows} );
+	if( -e $self->config( "config_path" )."/workflows" )
+	{	
+		# load repository-specific workflows (may overwrite)
+		EPrints::Workflow::load_all( 
+			$self->config( "config_path" )."/workflows",
+			$self->{workflows} );
+	}
 
 	return 1;
 }
@@ -887,6 +949,8 @@ sub _load_citation_specs
 sub _load_citation_dir
 {
 	my( $self, $dir ) = @_;
+
+	return unless -e $dir;
 
 	my $dh;
 	opendir( $dh, $dir );
@@ -1578,6 +1642,8 @@ sub run_trigger
 			last TRIGGER if defined $rc && $rc eq EP_TRIGGER_DONE;
 		}
 	}
+
+	return $rc;
 }
 
 ######################################################################
@@ -1903,13 +1969,13 @@ sub get_static_dirs
 		push @dirs, "$lib_path/themes/$theme/static";
 	}
 
-	# system path: /lib/static/
-	push @dirs, "$lib_path/lang/$langid/static";
-	push @dirs, "$lib_path/static";
-
 	# site_lib
 	push @dirs, "$site_lib_path/lang/$langid/static";
 	push @dirs, "$site_lib_path/static";
+
+	# system path: /lib/static/
+	push @dirs, "$lib_path/lang/$langid/static";
+	push @dirs, "$lib_path/static";
 
 	return @dirs;
 }
@@ -2722,7 +2788,7 @@ sub get_noise
 
 =begin InternalDoc
 
-=item $boolean = $repository->get_online
+=item $boolean = $repository->is_online
 
 Return true if this script is running via CGI, return false if we're
 on the command line.
@@ -2732,7 +2798,8 @@ on the command line.
 =cut
 ######################################################################
 
-sub get_online
+sub get_online { &is_online }
+sub is_online
 {
 	my( $self ) = @_;
 	
@@ -2744,7 +2811,7 @@ sub get_online
 
 =begin InternalDoc
 
-=item $secure = $repository->get_secure
+=item $secure = $repository->is_secure
 
 Returns true if we're using HTTPS/SSL (checks get_online first).
 
@@ -2753,12 +2820,13 @@ Returns true if we're using HTTPS/SSL (checks get_online first).
 =cut
 ######################################################################
 
-sub get_secure
+sub get_secure { &is_secure }
+sub is_secure
 {
 	my( $self ) = @_;
 
 	# mod_ssl sets "HTTPS", but only AFTER the Auth stage
-	return $self->get_online &&
+	return $self->is_online &&
 		($ENV{"HTTPS"} || $self->get_request->dir_config( 'EPrints_Secure' ));
 }
 
@@ -4560,6 +4628,17 @@ sub clone_for_me
 
 Redirects the browser to $url.
 
+Optional argument $opts{status_code} to specify the returned HTTP status code:
+
+    value  HTTP Status
+    301    301 Moved Permanently
+    302    302 Found
+    303    303 See Other
+    307    307 Temporary Redirect
+    308    308 Permanent Redirect  (experimental)
+
+By default 302 temporary redirection is issued.
+
 =end InternalDoc
 
 =cut
@@ -4570,19 +4649,23 @@ sub redirect
 	my( $self, $url, %opts ) = @_;
 
 	# Write HTTP headers if appropriate
-	if( $self->{"offline"} )
+	if( !$self->is_online )
 	{
 		print STDERR "ODD! redirect called in offline script.\n";
 		return;
 	}
-	EPrints::Apache::AnApache::send_status_line( $self->{"request"}, 302, "Moved" );
+
+	my $status = delete $opts{status_code} || 302;
+	
+	EPrints::Apache::AnApache::send_status_line( $self->request, $status );
 	EPrints::Apache::AnApache::header_out( 
-		$self->{"request"},
+		$self->request,
 		"Location",
 		$url );
 
-	EPrints::Apache::AnApache::send_http_header( $self->{"request"}, %opts );
-	return 302;
+	EPrints::Apache::AnApache::send_http_header( $self->request, %opts );
+
+	return $status;
 }
 
 ######################################################################
