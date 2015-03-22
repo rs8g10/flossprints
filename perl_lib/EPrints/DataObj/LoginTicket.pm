@@ -115,7 +115,7 @@ sub get_defaults
 	$data->{securecode} = &_code();
 	if( !$repo->config( "ignore_login_ip" ) )
 	{
-		$data->{ip} = $repo->get_request->connection->remote_ip;
+		$data->{ip} = $repo->remote_ip;
 	}
 
 	$data->{time} = time();
@@ -140,7 +140,7 @@ sub new_from_request
 
 	my $dataset = $repo->dataset( $class->get_dataset_id );
 
-	my $ip = $r->connection->remote_ip;
+	my $ip = $repo->remote_ip;
 
 	my $ticket;
 
@@ -255,7 +255,7 @@ sub generate_cookie
 
 	my $repo = $self->{session};
 
-	return $repo->{query}->cookie(
+	return $repo->query->cookie(
 		-name    => $self->session_key($repo),
 		-path    => ($repo->config( "http_root" ) || '/'),
 		-value   => $self->value( "code" ),
@@ -281,7 +281,7 @@ sub generate_secure_cookie
 
 	my $repo = $self->{session};
 
-	return $repo->{query}->cookie(
+	return $repo->query->cookie(
 		-name    => $self->secure_session_key($repo),
 		-path    => ($repo->config( "https_root" ) || '/'),
 		-value   => $self->value( "securecode" ),

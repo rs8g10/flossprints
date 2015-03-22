@@ -194,6 +194,7 @@ sub handler
 		my( undef, @parts ) = split m! /+ !x, $uri;
 		PATH: foreach my $path (
 				$repository->config( "cgi_path" ),
+				$repository->config( "base_path" ) . '/site_lib/cgi',
 				EPrints::Config::get( "cgi_path" ),
 			)
 		{
@@ -267,7 +268,7 @@ sub handler
 	}
 
 	# sitemap.xml (nb. only works if site is in root / of domain.)
-	if( $uri =~ m! ^$urlpath/sitemap\.xml$ !x )
+	if( $uri =~ m! ^$urlpath/sitemap(?:-sc)\.xml$ !x )
 	{
 		$r->handler( 'perl-script' );
 
@@ -542,6 +543,18 @@ sub handler
 	}
 	else
 	{
+		# redirect /foo to /foo/ if foo is a static directory
+		if( $localpath !~ m/\/$/ )
+		{
+			foreach my $dir ( $repository->get_static_dirs( $lang ) )
+			{
+				if( -d $dir.$localpath )
+				{
+					return redir( $r, "$uri/" );
+				}
+			}
+		}
+
 		local $repository->{preparing_static_page} = 1; 
 		EPrints::Update::Static::update_static_file( $repository, $lang, $localpath );
 	}

@@ -336,6 +336,7 @@ terms.</p>
 
 	<epp:phrase id="document_typename_text">Text</epp:phrase>
 	<epp:phrase id="document_typename_slideshow">Slideshow</epp:phrase>
+	<epp:phrase id="document_typename_spreadsheet">Spreadsheet</epp:phrase>
     <epp:phrase id="document_typename_image">Image</epp:phrase>
     <epp:phrase id="document_typename_audio">Audio</epp:phrase>
     <epp:phrase id="document_typename_video">Video</epp:phrase>
@@ -569,10 +570,18 @@ This field is required if no creators are listed.
 
     <epp:phrase id="eprint_fieldname_thesis_type">Thesis Type</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_thesis_type">Please select the thesis type.</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_type_diploma">Diploma</epp:phrase>
     <epp:phrase id="eprint_fieldopt_thesis_type_masters">Masters</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_phd">PhD</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_engd">EngD</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_type_doctoral">Doctoral</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_type_postdoctoral">Post-Doctoral</epp:phrase>
     <epp:phrase id="eprint_fieldopt_thesis_type_other">Other</epp:phrase>
+
+    <epp:phrase id="eprint_fieldname_thesis_name">Thesis Name</epp:phrase>
+    <epp:phrase id="eprint_fieldhelp_thesis_name">Please select the thesis name.</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_name_mphil">MPhil</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_name_phd">PhD</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_name_dphil">DPhil</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_thesis_name_other">Other</epp:phrase>
 
 
     <epp:phrase id="eprint_fieldname_patent_applicant">Patent Applicant</epp:phrase>
@@ -878,7 +887,7 @@ No reason was given.
 
 <p>Your username is: <b><epc:pin name="username"/></b>.</p>
 
-<p>After you have successfully confirmed your password, you can deposit items <a href="{$config{userhome}}">here</a>.</p>
+<p>After you have successfully confirmed your password, you can deposit items <a href="{$config{base_url}}{$config{userhome}}">here</a>.</p>
 
 <p>Once you have confirmed your identity you may also subscribe to the email alerts service, to be automatically informed of new deposits in the repository in your chosen subject areas in a daily, weekly or monthly digest.</p>
 
@@ -1323,6 +1332,8 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
 	
 	<epp:phrase id="Plugin/Screen/Admin/StorageManager:a_local_disk_storage">Local Disk Storage</epp:phrase>
 	<epp:phrase id="Plugin/Screen/Admin/StorageManager:a_local_disk_storage_pic"></epp:phrase>
+	<epp:phrase id="Plugin/Screen/Admin/StorageManager:a_epm_disk_storage">EPM Disk Storage</epp:phrase>
+	<epp:phrase id="Plugin/Screen/Admin/StorageManager:a_epm_disk_storage_pic"></epp:phrase>
 	<epp:phrase id="Plugin/Screen/Admin/StorageManager:m_local_archival_storage">Archival Storage</epp:phrase>
 	<epp:phrase id="Plugin/Screen/Admin/StorageManager:m_local_archival_storage_pic"></epp:phrase>
 	<epp:phrase id="Plugin/Screen/Admin/StorageManager:z_cloud_storage">Cloud Storage Platforms</epp:phrase>
@@ -1538,7 +1549,7 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
     <epp:phrase id="lib/searchexpression:form_problem"><p>There is a problem with the form:</p></epp:phrase>
     <epp:phrase id="lib/searchexpression:results_for">Results for <epc:pin name="title"/></epp:phrase>
     <epp:phrase id="lib/searchexpression:results">Displaying results <epc:pin name="from"/> to <epc:pin name="to"/> of <epc:pin name="n"/>.</epp:phrase>
-	<epp:phrase id="lib/searchexpression:results_page_size">Show <epc:pin name="n_10"/>, <epc:pin name="n_25"/> or <epc:pin name="n_100"/> results per page.</epp:phrase>
+    <epp:phrase id="lib/searchexpression:results_page_size">Show <epc:pin name="n_10"/>, <epc:pin name="n_25"/> or <epc:pin name="n_100"/> results per page. <epc:pin name="n_all">Show All</epc:pin></epp:phrase>
     <epp:phrase id="lib/searchexpression:search_time">Search time: <epc:pin name="searchtime"/>s.</epp:phrase>
     <epp:phrase id="lib/searchexpression:noresults">Search has no matches.</epp:phrase>
     <epp:phrase id="lib/searchexpression:export_section">
@@ -2997,6 +3008,7 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Screen/Subject/Edit:existing">Link Existing Subject</epp:phrase>
 	<epp:phrase id="Plugin/Screen/Subject/Edit:exists">A subject with that id already exists.</epp:phrase>
     <epp:phrase id="subject_fieldname_name_name">Name</epp:phrase>
+    <epp:phrase id="subject_fieldname_name_sortvalue">Sort name</epp:phrase>
     <epp:phrase id="subject_fieldname_name_lang">Language</epp:phrase>
     <epp:phrase id="Plugin/Screen/Subject/Edit:action_save">Save changes</epp:phrase>
     <epp:phrase id="Plugin/Screen/Subject/Edit:saved">Saved changes</epp:phrase>
@@ -3006,7 +3018,9 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Screen/Subject/Edit:added">Created new subject node with ID "<epc:pin name="newchild" />". Please now enter a subject name and set the subject to be depositable, if applicable.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Subject/Edit:linked">Linked the existing subject node "<epc:pin name="newchild" />" as a child of this subject node.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Subject/Edit:description">Modify the subject tree(s)</epp:phrase>
-	<epp:phrase id="Plugin/Screen/Subject/Edit:confirm_form">Unlinking this subject will cause it to be permanently deleted. Are you sure you want to do this? <epc:pin name="form" /></epp:phrase>
+    <epp:phrase id="Plugin/Screen/Subject/Edit:confirm_form">Deleting <strong><epc:pin name="child"/></strong><br />
+        Unlinking this subject will cause it to be permanently deleted. Are you sure you want to do this? <epc:pin name="form" />
+    </epp:phrase>
 
 
     <!-- other screens -->
@@ -3137,6 +3151,7 @@ PY = 2006 and OG = (Cambridge)<br />
 	<epp:phrase id="Plugin/Import/DefaultXML:file_imports_disabled">Attempt to import eprint with document data expressed as a local filename. This is a security hole in normal use, and is disabled. It *is* useful when bulk importing and may be enabled by setting enable_file_imports.</epp:phrase>
 	<epp:phrase id="Plugin/Import/DefaultXML:file_not_exists">Could not locate file for import: <epc:pin name="href" />.</epp:phrase>
 	<epp:phrase id="Plugin/Import/DOI:invalid_doi">Unrecognised or invalid doi: <epc:pin name="doi" />.<br />Remote service said: <tt><epc:pin name="msg"/></tt></epp:phrase>
+	<epp:phrase id="Plugin/Import/DOI:duplicate_doi"><strong>Duplicate DOI: <epc:pin name="doi" /></strong>.<br />This DOI already exists in the repository: <br /><epc:pin name="msg"/></epp:phrase>
 
 	<!-- Convert plugins -->
 
@@ -3327,11 +3342,17 @@ PY = 2006 and OG = (Cambridge)<br />
 
 
   <epp:phrase id="licenses_typename_cc_by_nd">Creative Commons: Attribution-No Derivative Works 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nd_4">Creative Commons: Attribution-No Derivative Works 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by">Creative Commons: Attribution 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_4">Creative Commons: Attribution 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_nc">Creative Commons: Attribution-Noncommercial 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nc_4">Creative Commons: Attribution-Noncommercial 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_nc_nd">Creative Commons: Attribution-Noncommercial-No Derivative Works 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nc_nd_4">Creative Commons: Attribution-Noncommercial-No Derivative Works 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_nc_sa">Creative Commons: Attribution-Noncommercial-Share Alike 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nc_sa_4">Creative Commons: Attribution-Noncommercial-Share Alike 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_sa">Creative Commons: Attribution-Share Alike 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_sa_4">Creative Commons: Attribution-Share Alike 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_public_domain">Creative Commons: Public Domain Dedication</epp:phrase>
   <epp:phrase id="licenses_typename_cc_gnu_gpl">Software: Creative Commons: GNU GPL 2.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_gnu_lgpl">Software: Creative Commons: GNU LGPL 2.1</epp:phrase>
@@ -3339,12 +3360,18 @@ PY = 2006 and OG = (Cambridge)<br />
   <epp:phrase id="licenses_typename_odc_odbl">Data: Open Database License (ODbL) (Attribution-Share Alike)</epp:phrase>
   <epp:phrase id="licenses_typename_odc_by">Data: Open Data Commons Attribution License (Attribution)</epp:phrase>
 
-  <epp:phrase id="licenses_description_cc_by_nd"><a href="http://creativecommons.org/licenses/by-nd/2.5/">Creative Commons Attribution No Derivatives</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by"><a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_nc"><a href="http://creativecommons.org/licenses/by-nc/2.5/">Creative Commons Attribution Non-commercial</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_nc_nd"><a href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution Non-commercial No Derivatives</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_nc_sa"><a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">Creative Commons Attribution Non-commercial Share Alike</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_sa"><a href="http://creativecommons.org/licenses/by-sa/2.5/">Creative Commons Attribution Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nd"><a href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nd_4"><a href="http://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Attribution No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by"><a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_4"><a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc"><a href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution Non-commercial</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_4"><a href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution Non-commercial</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_nd"><a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution Non-commercial No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_nd_4"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution Non-commercial No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_sa"><a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution Non-commercial Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_sa_4"><a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution Non-commercial Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_sa"><a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_sa_4"><a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution Share Alike</a></epp:phrase>
   <epp:phrase id="licenses_description_cc_public_domain"><a href="http://creativecommons.org/licenses/publicdomain/">Creative Commons Public Domain Dedication</a></epp:phrase>
   <epp:phrase id="licenses_description_cc_gnu_gpl"><a href="http://creativecommons.org/licenses/GPL/2.0/">Creative Commons GNU GPL (Software)</a></epp:phrase>
   <epp:phrase id="licenses_description_cc_gnu_lgpl"><a href="http://creativecommons.org/licenses/LGPL/2.1/">Creative Commons GNU LGPL (Software)</a></epp:phrase>
@@ -3954,11 +3981,13 @@ To create a blank EPM entire a new id in the input and click <epc:phrase ref="Pl
 	<epp:phrase id="document_typename_indexcodes">Indexer Terms</epp:phrase>
 	<epp:phrase id="document_typename_text/html">HTML</epp:phrase>
 	<epp:phrase id="document_typename_application/pdf">PDF</epp:phrase>
+        <epp:phrase id="document_typename_application/adobe">PDF</epp:phrase>
 	<epp:phrase id="document_typename_application/postscript">Postscript</epp:phrase>
 	<epp:phrase id="document_typename_text/plain">Plain Text</epp:phrase>
 	<epp:phrase id="document_typename_application/vnd.ms-powerpoint">Microsoft PowerPoint</epp:phrase>
 	<epp:phrase id="document_typename_application/vnd.ms-excel">Microsoft Excel</epp:phrase>
 	<epp:phrase id="document_typename_application/msword">Microsoft Word</epp:phrase>
+        <epp:phrase id="document_typename_application/vnd.openxmlformats-officedocument.wordprocessingml.document">XML Word Processing Document (DOCX)</epp:phrase>
 	<epp:phrase id="document_typename_image/jpeg">Image (JPEG)</epp:phrase>
 	<epp:phrase id="document_typename_image/jpg">Image (JPEG)</epp:phrase>
 	<epp:phrase id="document_typename_image/png">Image (PNG)</epp:phrase>
@@ -4006,5 +4035,8 @@ To create a blank EPM entire a new id in the input and click <epc:phrase ref="Pl
     <epp:phrase id="epm_fieldhelp_screenshot">Upload a demonstrative screen shot for this package.</epp:phrase>
 
     <epp:phrase id="lib/metafield:join_image"><br /></epp:phrase>
+
+    <epp:phrase id="summary_page:actions"><h3>Actions (login required)</h3></epp:phrase>
+    <epp:phrase id="summary_page:download">Download</epp:phrase>
 
 </epp:phrases>
